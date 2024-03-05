@@ -1,0 +1,6 @@
+Flask==3.0.2  #flask development framework
+pytest==8.0.2  #python testing library
+coverage==7.4.3  #python code coverage
+build==1.1.1 #python build tool
+gunicorn==21.2.0 #production web server
+environs==10.3.0 #utility to load and validate environment variables
