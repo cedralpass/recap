@@ -59,7 +59,6 @@ def validate_key_topics(key_topics):
     if len(key_topics) > 0:
       try:    
         key_topics_json = json.loads(key_topics)
-        print(key_topics_json)
       except json.JSONDecodeError as e:
         print("Oops!  That was not propper JSON  Try again...", e)
         error = "please store key_topics as JSON"
@@ -70,20 +69,15 @@ def validate_sub_categories(sub_categories):
     if len(sub_categories) > 0:
       try:    
         sub_categories_json = json.loads(sub_categories)
-        print(sub_categories_json)
       except json.JSONDecodeError as e:
         print("Oops!  That was not propper JSON  Try again...", e)
         error = "please store sub_categories as JSON"
     return error
 
 def get_article(id, check_author=True):
-    print('id: ' + str(id))
     article_sql = '''SELECT a.id, a.url_path, a.title, a.summary, a.author, a.category,
       a.key_topics, a.sub_category, a.created, a.user_id, u.username 
       FROM article a JOIN user u ON a.user_id = u.id WHERE a.id = ?'''
-
-    print(article_sql)
-
     article = get_db().execute(
         article_sql,
         (id,)
