@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Edit "{{ article['url_path'] }}"{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <p>This information will come from AI</p>
+    <label for="title">Title</label>
+    <textarea name="title" id="title">{{ request.form['title'] or article['title']}}</textarea>
+    <label for="summary">Summary</label>
+    <textarea name="summary" id="summary">{{ request.form['summary'] or article['summary'] }}</textarea>
+    <label for="author">Author</label>
+    <input type="text" id="author" name="author" value="{{ request.form['author'] or article['author']}}"><br>
+    <label for="category">Category</label>
+    <input type="text" id="category" name="category"  value="{{ request.form['category'] or article['category']}}"><br>
+    <label for="key_topics">Key Topics JSON</label>
+    <textarea name="key_topics" id="key_topics">{{ request.form['key_topics'] or article['key_topics']}}</textarea>
+    <label for="sub_category">Sub Category JSON</label>
+    <textarea name="sub_category" id="sub_category">{{ request.form['sub_category'] or article['sub_category']}}</textarea>
+    <input type="submit" value="Save">
+  </form>
+  <hr>
+  <form action="{{ url_for('article.delete', id=article['id']) }}" method="post">
+    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+  </form>
+{% endblock %}

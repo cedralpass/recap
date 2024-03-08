@@ -44,7 +44,9 @@ def create_app(test_config=None):
 
     from . import auth
     app.register_blueprint(auth.bp) #register the auth blueprint
-  
-    # app.add_url_rule('/', endpoint='index') #create index route
+
+    from . import article
+    app.register_blueprint(article.bp) # register the article blueprint
+    app.add_url_rule('/', endpoint='index') #create index route
 
     return app

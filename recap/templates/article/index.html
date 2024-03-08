@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title%}articles{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('article.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for article in articles %}
+    <article class="article">
+      <header>
+        <div>
+          <h1>{{ article['url_path'] }}</h1>
+          <div class="about">by {{ article['username'] }} on {{ article['created'].strftime('%Y-%m-%d') }}</div>
+        </div>
+        {% if g.user['id'] == article['user_id'] %}
+          <a class="action" href="{{ url_for('article.update', id=article['id']) }}">Edit</a>
+        {% endif %}
+      </header>
+      <p class="body">{{ article['title'] }}, {{ article['author'] }}</p>
+      <p class="category">{{ article['category'] }}</p>
+      <p class="body">{{ article['summary'] }}</p>
+    </article>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
