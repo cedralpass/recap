@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title%}articles{% endblock %}</h1>
+{% if g.user %}
+<a class="action" href="{{ url_for('article.create') }}">New</a>
+<a class="action" href="{{ url_for('index') }}">View All</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<article class="article">
+    <header>
+        <div>
+            <h1>{{ article[0]['url_path'] }}</h1>
+            <div class="about">by {{ article[0]['username'] }} on {{ article[0]['created'].strftime('%Y-%m-%d') }}</div>
+        </div>
+        {% if g.user['id'] == article[0]['user_id'] %}
+        <a class="action" href="{{ url_for('article.update', id=article[0]['id']) }}">Edit</a>
+        {% endif %}
+    </header>
+    <p class="body">{{ article[0]['title'] }}, {{ article[0]['author'] }}
+    <div class="category">{{ article[0]['category'] }}</div>
+    <p class="body">{{ article[0]['summary'] }}</p>
+    <div>Key Topics Covered
+        <ul>
+            {% for topic in article[1] %}
+            <li>{{topic}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>Sub Categoreis
+        <ul>
+            {% for topic in article[2] %}
+            <li>{{topic}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</article>
+{% endblock %}

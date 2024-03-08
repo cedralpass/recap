@@ -15,6 +15,7 @@
           <h1>{{ article['url_path'] }}</h1>
           <div class="about">by {{ article['username'] }} on {{ article['created'].strftime('%Y-%m-%d') }}</div>
         </div>
+        <a class="action" href="{{ url_for('article.show', id=article['id']) }}">View</a>
         {% if g.user['id'] == article['user_id'] %}
           <a class="action" href="{{ url_for('article.update', id=article['id']) }}">Edit</a>
         {% endif %}

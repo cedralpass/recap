@@ -5,6 +5,7 @@ from werkzeug.exceptions import abort
 
 from recap.auth import login_required
 from recap.db import get_db
+import json
 
 bp = Blueprint('article', __name__)
 
@@ -111,3 +112,15 @@ def delete(id):
     db.execute('DELETE FROM article WHERE id = ?', (id,))
     db.commit()
     return redirect(url_for('article.index'))
+
+
+@bp.route('/<int:id>/show', methods=('GET','POST'))
+@login_required
+def show(id):
+    article = get_article(id,False)
+    key_topics = article['key_topics']
+    key_topics_json = json.loads(key_topics)
+    sub_categories = article['sub_category']
+    sub_categories_json = json.loads(sub_categories)
+    content=[article,key_topics_json["key_topics"],sub_categories_json["sub_categories"]]
+    return render_template('article/show.html', article=content)
