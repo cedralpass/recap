@@ -35,6 +35,10 @@ def create():
 
         if not url_path:
             error = 'A url to public article is required.'
+        if error is None:
+          error = validate_key_topics(key_topics)  
+        if error is None:
+          error = validate_sub_categories(sub_category) 
 
         if error is not None:
             flash(error)
@@ -49,6 +53,28 @@ def create():
             return redirect(url_for('article.index'))
 
     return render_template('article/create.html')
+
+def validate_key_topics(key_topics):
+    error=None
+    if len(key_topics) > 0:
+      try:    
+        key_topics_json = json.loads(key_topics)
+        print(key_topics_json)
+      except json.JSONDecodeError as e:
+        print("Oops!  That was not propper JSON  Try again...", e)
+        error = "please store key_topics as JSON"
+    return error
+
+def validate_sub_categories(sub_categories):
+    error=None
+    if len(sub_categories) > 0:
+      try:    
+        sub_categories_json = json.loads(sub_categories)
+        print(sub_categories_json)
+      except json.JSONDecodeError as e:
+        print("Oops!  That was not propper JSON  Try again...", e)
+        error = "please store sub_categories as JSON"
+    return error
 
 def get_article(id, check_author=True):
     print('id: ' + str(id))
@@ -89,6 +115,9 @@ def update(id):
 
         if not url_path:
             error = 'A URL for a public article is required.'
+        
+        error = validate_key_topics(key_topics) 
+        error = validate_sub_categories(sub_category) 
 
         if error is not None:
             flash(error)
@@ -122,5 +151,5 @@ def show(id):
     key_topics_json = json.loads(key_topics)
     sub_categories = article['sub_category']
     sub_categories_json = json.loads(sub_categories)
-    content=[article,key_topics_json["key_topics"],sub_categories_json["sub_categories"]]
+    content=[article,key_topics_json["key_topics"],sub_categories_json["sub_category"]]
     return render_template('article/show.html', article=content)

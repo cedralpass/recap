@@ -17,9 +17,9 @@
     <input type="text" id="author" name="author" value="{{ request.form['author'] }}"><br>
     <label for="category">Category</label>
     <input type="text" id="category" name="category"  value="{{ request.form['category'] }}"><br>
-    <label for="key_topics">Key Topics JSON</label>
+    <label for="key_topics">Key Topics JSON ex: {"key_topics": ["a","b","c"]}</label>
     <textarea name="key_topics" id="key_topics">{{ request.form['key_topics'] }}</textarea>
-    <label for="sub_category">Sub Category JSON</label>
+    <label for="sub_category">Sub Category JSON ex:  {"sub_category": ["a","b","c"]}</label>
     <textarea name="sub_category" id="sub_category">{{ request.form['sub_category'] }}</textarea>
     <input type="submit" value="Save">
 </form>
