@@ -18,8 +18,10 @@ def classify_url():
     
     #make OpenAI Call
     response = client.chat.completions.create(
+        #model="gpt-4-turbo-preview",
         model="gpt-3.5-turbo",
         messages=build_prompt(url),
+            response_format={ "type": "json_object" },
             temperature=0.8,
             max_tokens=256,
             frequency_penalty=0,
@@ -29,6 +31,7 @@ def classify_url():
     if len(response.choices)>=1:
         current_app.logger.info(response.choices[0].message.content)
         json_return = response.choices[0].message.content
+        current_app.logger.info("model %s cost %s", response.model, response.usage)
     else:
         current_app.logger.error("error: with openAPI call. no choices returned %s", response)
 
@@ -48,7 +51,7 @@ def build_prompt(url):
     prompt_string =  [
             {
                 "role": "system",
-                "content": "Using these categories: Software Architecture, Leadership, Business Strategy, Artificial Intelligence.  If the blog does not fit a category, recommend one. Please respond with category, url of blog, blog title, author,  summarize the content into a short paragraph, and key topics as bullet points, and sub-categories as bullet points. respond in a structured JSON response. "
+                "content": "Using these categories: Software Architecture, Leadership, Business Strategy, Artificial Intelligence, Food and Cooking.  If the blog does not fit a category, recommend one. Please respond with category, url of blog, blog title, author,  summarize the content into a short paragraph, and key topics as bullet points, and sub-categories as bullet points. respond in a structured JSON response. "
             },
             {
                 "role": "user",
