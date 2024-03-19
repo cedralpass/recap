@@ -1,13 +1,47 @@
 import os
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, logging
+from logging.handlers import RotatingFileHandler
+from logging.config import dictConfig
 from environs import Env
+
+
 
 
 def create_app():
     # create and configure the app
     test_config = None
+
+    dictConfig(
+        {
+            "version": 1,
+            "formatters": {
+                "default": {
+                    "format": "[%(asctime)s] %(process)d %(levelname)s in %(module)s: %(message)s",
+                }
+            },
+            "handlers": {
+                "console": {
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://sys.stdout",
+                    "formatter": "default",
+                },
+                "file": {
+                "class": "logging.handlers.RotatingFileHandler",
+                "filename": "aiapi_app.log",
+                "maxBytes": 1024*1024,
+                "backupCount": 2,
+                "formatter": "default",
+            }
+            },
+            "root": {"level": "DEBUG", "handlers": ["console","file"]},
+        }
+    )
     app = Flask(__name__)
+    #app.logger.setLevel('DEBUG')
+    #handler = RotatingFileHandler('aiapi_app.log', maxBytes=1024*1024, backupCount=1)
+    #handler.setFormatter('[%(asctime)s] %(levelname)s in %(module)s: %(message)s')
+    #app.logger.addHandler(handler)
     
     app.config.from_mapping(
         SECRET_KEY='dev',
