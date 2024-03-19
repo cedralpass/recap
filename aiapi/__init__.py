@@ -11,6 +11,10 @@ from environs import Env
 def create_app():
     # create and configure the app
     test_config = None
+    #TODO: figure out better config
+    env = Env()
+    env.read_env()
+    log_level = env("AI_API_LogLevel")
 
     #good example of logging from here: https://betterstack.com/community/guides/logging/how-to-start-logging-with-flask/
     dictConfig(
@@ -35,23 +39,17 @@ def create_app():
                 "formatter": "default",
             }
             },
-            "root": {"level": "DEBUG", "handlers": ["console","file"]},
+            "root": {"level": log_level, "handlers": ["console","file"]},
         }
     )
     app = Flask(__name__)
-    #app.logger.setLevel('DEBUG')
-    #handler = RotatingFileHandler('aiapi_app.log', maxBytes=1024*1024, backupCount=1)
-    #handler.setFormatter('[%(asctime)s] %(levelname)s in %(module)s: %(message)s')
-    #app.logger.addHandler(handler)
     
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
 
-    #TODO: figure out better config
-    env = Env()
-    env.read_env()
+    
     
     extract_config_key("AI_API_KEY", app, env)
     extract_config_key("AI_API_OPENAI", app, env)

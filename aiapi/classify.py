@@ -22,8 +22,8 @@ def classify_url():
         model="gpt-3.5-turbo",
         messages=build_prompt(url),
             response_format={ "type": "json_object" },
-            temperature=0.8,
-            max_tokens=256,
+            temperature=0.9,
+            max_tokens=512,
             frequency_penalty=0,
             presence_penalty=0
             )
