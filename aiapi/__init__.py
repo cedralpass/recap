@@ -47,6 +47,5 @@ def create_app():
 def extract_config_key(key, app, env):
     try:
       app.config[key] = env(key)
-      print(app.config[key])
     except:
         print("Error occured with key " + key)
