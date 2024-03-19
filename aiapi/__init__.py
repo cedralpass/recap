@@ -12,6 +12,7 @@ def create_app():
     # create and configure the app
     test_config = None
 
+    #good example of logging from here: https://betterstack.com/community/guides/logging/how-to-start-logging-with-flask/
     dictConfig(
         {
             "version": 1,
