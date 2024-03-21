@@ -10,7 +10,11 @@ bp = Blueprint('classify', __name__)
 
 @bp.route('/classify_url',methods=('GET', 'POST'))
 def classify_url():
-    url = extract_url_from_request()
+    url = None
+    ref_key = None
+    url = extract_from_request('url')
+    ref_key = extract_from_request('ref_key')
+    
     json_return={}
 
     #create OpenAI request
@@ -18,8 +22,8 @@ def classify_url():
     
     #make OpenAI Call
     response = client.chat.completions.create(
-        #model="gpt-4-turbo-preview",
-        model="gpt-3.5-turbo",
+        model="gpt-4-turbo-preview",
+        #model="gpt-3.5-turbo",
         messages=build_prompt(url),
             response_format={ "type": "json_object" },
             temperature=0.9,
@@ -35,23 +39,28 @@ def classify_url():
     else:
         current_app.logger.error("error: with openAPI call. no choices returned %s", response)
 
-    return jsonify(json_return)
+    response_json = json.loads(json_return)
+    if ref_key is not None:
+        response_json['ref_key']=ref_key
 
-def extract_url_from_request():
-    url="https://levelup.gitconnected.com/structuring-a-large-production-flask-application-7a0066a65447"
-    if request.form.get('url') is not None:
-        url = request.form.get('url')
+
+    return jsonify(response_json)
+
+def extract_from_request(key):
+    value=None
+    if request.form.get(key) is not None:
+        value = request.form.get(key)
     else:
-         current_app.logger.error("error: must supply url for classification, using defualt for testing")
-    current_app.logger.info("url to classify %s", url)
-    return url
+         current_app.logger.error("error: must supply key for url for classification")
+    current_app.logger.info("value to missing for %s", key)
+    return value
 
 def build_prompt(url):
     classify_content  = "please classify  this blog post: " + str(url)
     prompt_string =  [
             {
                 "role": "system",
-                "content": "Using these categories: Software Architecture, Leadership, Business Strategy, Artificial Intelligence, Food and Cooking.  If the blog does not fit a category, recommend one. Please respond with category, url of blog, blog title, author,  summarize the content into a short paragraph, and key topics as bullet points, and sub-categories as bullet points. respond in a structured JSON response. "
+                "content": "Using these content categories as examples: Software Architecture, Leadership, Business Strategy, and Artificial Intelligence.  If the content does not fit a category, recommend a new category. Please respond with category, url of blog, blog title, author, summarize the content into a short paragraph, key topics as bullet points, and sub-categories as bullet points. respond in a structured JSON response. "
             },
             {
                 "role": "user",
