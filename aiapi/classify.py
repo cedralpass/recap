@@ -2,13 +2,26 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for,jsonify, current_app, logging
 )
 from werkzeug.exceptions import abort
+import functools
 
 import json
 from openai import OpenAI
 
 bp = Blueprint('classify', __name__)
 
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        key = extract_from_request('secret')
+        if key is None:
+            return jsonify("Not Authorized")
+
+        return view(**kwargs)
+
+    return wrapped_view
+
 @bp.route('/classify_url',methods=('GET', 'POST'))
+@login_required
 def classify_url():
     url = None
     ref_key = None
@@ -68,3 +81,4 @@ def build_prompt(url):
             }]
     current_app.logger.info("prompt to classify: %s", prompt_string)
     return prompt_string
+
