@@ -14,3 +14,8 @@ build/
 flasker/.env
 *.log
 .vscode
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+.DS_Store

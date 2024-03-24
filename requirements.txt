@@ -5,3 +5,5 @@ build==1.1.1 #python build tool
 gunicorn==21.2.0 #production web server
 environs==10.3.0 #utility to load and validate environment variables
 openai==1.14.2 #openai library to call openai
+aws-cdk-lib==2.133.0 # AWS CDK library
+constructs>=10.0.0,<11.0.0 # AWS constructs for CDK
