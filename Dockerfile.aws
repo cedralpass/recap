@@ -7,6 +7,9 @@ FROM --platform=linux/amd64 python:3.11-alpine
 # By default, listen on port 8000
 EXPOSE 8000/tcp
 
+#install curl
+RUN apk --no-cache add curl
+
 # Set the working directory in the container
 WORKDIR /app
 
@@ -20,4 +23,4 @@ RUN pip install -r requirements.txt
 COPY aiapi aiapi
 
 # Specify the command to run on container start
-CMD ["gunicorn"  , "-b", "0.0.0.0:8000", "aiapi:create_app()","--log-level debug", "--timeout 90"]
+CMD ["gunicorn"  , "-w", "3", "-b", "0.0.0.0:8000", "aiapi:create_app()","--log-level debug", "--timeout 90"]
