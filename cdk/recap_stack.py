@@ -69,6 +69,7 @@ class RecapAIApiStack(Stack):
             max_capacity=3, # sets max host count for auto-scaling
             min_capacity=1, # sets min host count for auto-scaling
         )
+
         scaling.scale_on_cpu_utilization(
             "CpuScaling",
             target_utilization_percent=50,

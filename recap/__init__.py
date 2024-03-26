@@ -2,7 +2,9 @@ import os
 
 from flask import Flask
 from environs import Env
-
+from recap.aiapi_helper import AiApiHelper
+from logging.handlers import RotatingFileHandler
+from logging.config import dictConfig
 
 def create_app():
     # create and configure the app
@@ -21,6 +23,35 @@ def create_app():
     env = Env()
     env.read_env()
     app.config['API_KEY'] = env("API_KEY")
+
+    log_level = env("RECAP_LogLevel")
+
+    #good example of logging from here: https://betterstack.com/community/guides/logging/how-to-start-logging-with-flask/
+    dictConfig(
+        {
+            "version": 1,
+            "formatters": {
+                "default": {
+                    "format": "[%(asctime)s] %(process)d %(levelname)s in %(module)s: %(message)s",
+                }
+            },
+            "handlers": {
+                "console": {
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://sys.stdout",
+                    "formatter": "default",
+                },
+                "file": {
+                "class": "logging.handlers.RotatingFileHandler",
+                "filename": "recap_app.log",
+                "maxBytes": 1024*1024,
+                "backupCount": 2,
+                "formatter": "default",
+            }
+            },
+            "root": {"level": log_level, "handlers": ["console","file"]},
+        }
+    )
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
