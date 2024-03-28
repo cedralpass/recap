@@ -73,7 +73,7 @@ def build_prompt(url):
     prompt_string =  [
             {
                 "role": "system",
-                "content": "Using these content categories as examples: Software Architecture, Leadership, Business Strategy, and Artificial Intelligence.  If the content does not fit a category, recommend a new category. Please respond with category, url of blog, blog title, author, summarize the content into a short paragraph, three key topics as bullet points, and three sub categories as bullet points. respond in a structured JSON response with keys: author, blog_title, category, summary, key_topics, sub_categories, url. "
+                "content": "Using these content categories as examples: Software Architecture, Leadership, Business Strategy, and Artificial Intelligence.  If the content does not fit a category, recommend a new category. Please respond with category, url of blog, blog title, author, summarize the content into a short paragraph, extract three key topics as bullet points, and extract three sub categories as bullet points. respond in a structured JSON response with keys: author, blog_title, category, summary, key_topics, sub_categories, url. "
             },
             {
                 "role": "user",
