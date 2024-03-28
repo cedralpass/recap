@@ -167,6 +167,19 @@ def show(id):
     content=[article,key_topics_json["key_topics"],sub_categories_json["sub_category"]]
     return render_template('article/show.html', article=content)
 
+@bp.route('/<int:id>/reclassify', methods=('GET','POST'))
+@login_required
+def reclassify(id):
+    article = get_article(id,False)
+    current_app.logger.info("calling async Classification Service for article %s", article['url_path'])
+    #recap.tasks.classify_url(url_path, g.user['id'])
+    job = launch_task(name='recap.tasks.classify_url', description='url classification', url=article['url_path'], user_id=g.user['id'])
+    print('Job is Executing ' + job.id + ' its status ' + job.get_status(refresh=True))
+    flash('Article is being reclassified by job' + job.id + '. Articles will be classified within 20 seconds')
+    current_app.logger.info("Classification Service returned")               
+    return redirect(url_for('article.index'))
+
+
 # TODO - understand args and kwargs better for dynamic params 
 def launch_task(name, description, *args, **kwargs):
     rq_job = current_app.task_queue.enqueue('recap.tasks.classify_url', description=description, args=args, kwargs=kwargs)
