@@ -81,7 +81,7 @@ def create_app():
     # a simple url that enques a RQ job and responds
     @app.route('/job')
     def job():
-        job = launch_task(name='example', description='example', seconds=5)
+        job = launch_task(name='recap.tasks.example', description='example', seconds=5)
         return 'Job is Executing ' + job.id + ' its status ' + job.get_status(refresh=True)
     
     # a url for showing a job_id
@@ -102,7 +102,8 @@ def create_app():
 
     # TODO - understand args and kwargs better for dynamic params 
     def launch_task(name, description, *args, **kwargs):
-        rq_job = current_app.task_queue.enqueue('flaskr.tasks.example', description=description, args=args, kwargs=kwargs)
+        rq_job = app.task_queue.enqueue(name, description=description, args=args, kwargs=kwargs)
         return rq_job
+    
     
     return app

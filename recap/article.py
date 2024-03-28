@@ -41,18 +41,13 @@ def create():
                 (url_path, g.user['id'])
             )
             db_result = db.commit()
-            #TODO: get article ID post insert
-            article = get_article_by_url_for_user(url_path)
-            if article is not None:
-               current_app.logger.info("calling Classification Service for %s and article id %s", url_path, article['id'])
-               classify_result = AiApiHelper.ClassifyUrl(url_path, article['id']) 
-               current_app.logger.info("Classification Service returned result: %s", classify_result)
-               key_topics_dict= {'key_topics':classify_result['key_topics']}
-               sub_category_dict= {'sub_category':classify_result['sub-categories']}
-               key_topics_json = json.dumps(key_topics_dict)
-               sub_category_json = json.dumps(sub_category_dict)
-               update_article(article['id'], article['url_path'], classify_result['blog_title'], classify_result['summary'], classify_result['author'], classify_result['category'], key_topics_json, sub_category_json)
-               return redirect(url_for('article.index'))
+            current_app.logger.info("calling async Classification Service for %s", url_path)
+            #recap.tasks.classify_url(url_path, g.user['id'])
+            job = launch_task(name='recap.tasks.classify_url', description='url classification', url=url_path, user_id=g.user['id'])
+            print('Job is Executing ' + job.id + ' its status ' + job.get_status(refresh=True))
+            flash('Article created successfully and is being classified by job + ' + job.id + '. Articles will be classified within 20 seconds')
+            current_app.logger.info("Classification Service returned")               
+            return redirect(url_for('article.index'))
 
     return render_template('article/create.html')
 
@@ -94,14 +89,15 @@ def get_article(id, check_author=True):
 
     return article
 
-def get_article_by_url_for_user(url):
+def get_article_by_url_for_user(url, user_id):
+    current_app.logger.info("looking up article using get_article_by_url_for_user by %s for user %s",url, user_id)
     article_sql = '''SELECT a.id, a.url_path, a.title, a.summary, a.author, a.category,
       a.key_topics, a.sub_category, a.created, a.user_id, u.username 
       FROM article a JOIN user u ON a.user_id = u.id WHERE a.url_path = ? and a.user_id = ?
       order by a.id desc'''
     article = get_db().execute(
         article_sql,
-        (url, g.user['id'],)
+        (url, user_id,)
     ).fetchone()
 
     return article
@@ -170,3 +166,8 @@ def show(id):
        sub_categories_json= {'sub_category':''}
     content=[article,key_topics_json["key_topics"],sub_categories_json["sub_category"]]
     return render_template('article/show.html', article=content)
+
+# TODO - understand args and kwargs better for dynamic params 
+def launch_task(name, description, *args, **kwargs):
+    rq_job = current_app.task_queue.enqueue('recap.tasks.classify_url', description=description, args=args, kwargs=kwargs)
+    return rq_job
