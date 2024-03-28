@@ -33,6 +33,11 @@ python run.py
 [recap index page ](http://127.0.0.1:8001/)
 [aiapi hello function ](http://127.0.0.1:8001/aiapi/hello)
 
+## Background processing worker
+Make sure a worker is running in a python terminal for background processing.
+
+```rq worker RECAP-Classify```
+
 # Produciton
 ## recap - Run the produciton gunicorn web server
 Run the following command to run in produciton
@@ -56,3 +61,4 @@ gunicorn -w 4 'aiapi:create_app()' -b 127.0.0.1:8080 --access-logfile=gunicorn.h
 [aiapi hello function ](http://127.0.0.1:8080/aiapi/hello)
 
 [gunicorn settings](https://docs.gunicorn.org/en/stable/settings.html)
+
