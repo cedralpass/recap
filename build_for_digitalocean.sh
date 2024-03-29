@@ -11,7 +11,7 @@ do_repository="registry.digitalocean.com/recap-ai-api"
 # Print the ECR repository URL
 echo "ECR Repository URL: $do_repository"
 
-#docker build -t recap-aiapi . -f Dockerfile.aws
+docker build -t recap-aiapi . -f Dockerfile.aws
 
 # Tag your Docker image
 docker tag recap-aiapi:latest "$do_repository/recap-aiapi:latest"
