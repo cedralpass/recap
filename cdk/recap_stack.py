@@ -44,12 +44,13 @@ class RecapAIApiStack(Stack):
         repository_arn=container_repo)
 
         # ECS Cluster
-        cluster = ecs.Cluster(self, "RecapAIApiCluster", vpc=vpc)
+        cluster = ecs.Cluster(self,"RecapAIApiCluster", vpc=vpc, cluster_name="RecapAIApiCluster")
 
         # Fargate
         fargate_service = ecs_patterns.NetworkLoadBalancedFargateService(
             self, "FargateService",
             cluster=cluster,
+            service_name="RecapAIApiService",
             listener_port=80, # for ports other than 80, you need listner-port set to port and container_port set to port.  Currently we are port forwarding 80 to 8000
             desired_count=1, # sets desired host count for auto-scaling
             task_image_options=ecs_patterns.NetworkLoadBalancedTaskImageOptions(

@@ -25,3 +25,6 @@ docker push "$ecr_repository/recap-aiapi:latest"
 
 # Print a message indicating success
 echo "Image published to ECR repository: $ecr_repository/recap-aiapi:latest"
+
+# Update the ECS service with the new Docker image and force deployment
+aws ecs update-service --cluster RecapAIApiCluster --service RecapAIApiService   --force-new-deployment
