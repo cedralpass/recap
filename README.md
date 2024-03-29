@@ -57,6 +57,13 @@ gunicorn -w 4 'aiapi:create_app()' -b 127.0.0.1:8080 --access-logfile=gunicorn.h
  gunicorn -w 4 'app' -b 127.0.0.1:8080 --access-logfile=gunicorn.http.log --error-logfile=gunicorn.error.log
 ```
 
+## run gunicorn as daemon
+``` gunicorn -w 4 'app' -b 127.0.0.1:8080 --access-logfile=gunicorn.http.log --error-logfile=gunicorn.error.log --daemon```
+
+### kill gunicorn
+1. ``` ps -ef | grep gunicorn```
+2. ```kill -9 [prgm pid]```
+
 [recap index page ](http://127.0.0.1:8080/)
 [aiapi hello function ](http://127.0.0.1:8080/aiapi/hello)
 

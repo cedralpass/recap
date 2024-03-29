@@ -34,6 +34,11 @@ also wise to add it to your shell profile.
 
 Good reference: [Flask Mega-Tuturial: Background Jobs](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xxii-background-jobs)
 
+## Running in a pool - BETA feature of RQ
+you can run in a pool of multiple workers.  read more at [RQ Workers](https://python-rq.org/docs/workers/)
+
+``` rq worker-pool RECAP-Classify -n 3```
+
 
 
 
