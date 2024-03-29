@@ -25,6 +25,13 @@ RQ uses a worker process. We need to spawn a worker using the RQ "worker" option
 We pass the queue name for the worker to monitor. without a queue passed in, the worker monitors the "default" queue
 ```rq worker RECAP-Classify```
 
+## HTTPX and Workers
+Workers are forked processes.  We are also using HTTPX which is another forked process.  MAC has a security mechanism to block this..  We need to set an Environment variable
+
+```export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES```
+
+also wise to add it to your shell profile. 
+
 Good reference: [Flask Mega-Tuturial: Background Jobs](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xxii-background-jobs)
 
 
