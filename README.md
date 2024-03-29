@@ -69,3 +69,18 @@ gunicorn -w 4 'aiapi:create_app()' -b 127.0.0.1:8080 --access-logfile=gunicorn.h
 
 [gunicorn settings](https://docs.gunicorn.org/en/stable/settings.html)
 
+## Fully Contained Docker Contaner
+We can also run Recap, API, REDIS in one container for testing / demo...
+
+Dockerfile is Dockerfile.aws.full
+
+### Build with this command
+
+```docker build -t recap-full . -f Dockerfile.aws.full```
+
+### Run with this command
+```docker run --detach  -p 8000:8000 -t recap-full```
+### Stop the container with this command
+
+1. to list the docker containers running ```docker ps```
+2. to stop the container: ```docker stop <container id>``` example ```docker stop 9e498c6d5732```
