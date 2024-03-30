@@ -30,7 +30,7 @@
       {% if article['title'] is none %}
       <p class="body">Classifing document please wait ~20 seconds.</p>
       {%else%}
-      <p class="body">{{ article['title'] }}, {{ article['author'] }}</p>
+      <p class="body">By {{ article['author'] }}</p>
       <p class="category">{{ article['category'] }}</p>
       <p class="body">{{ article['summary'] }}</p>
       {%endif%}
