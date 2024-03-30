@@ -1,5 +1,7 @@
 # recap
 
+Currently Amazon Web Services with ECS is too expensive $5 a day as configured in CDK. For now, we will deploy with DigitalOcean and run App Platform. To get back to CDK, we need to add the python libraries back that are commented out in our requirements.txt.  Removing CDK also removes 180MB from our container size.
+
 #setup
 ## Init DB
 Run the following command to init DB

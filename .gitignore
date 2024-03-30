@@ -15,6 +15,9 @@ flasker/.env
 *.log
 .vscode
 
+#redis dump file
+dump.rdb
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out

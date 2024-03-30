@@ -6,7 +6,8 @@ gunicorn==21.2.0 #production web server
 environs==10.3.0 #utility to load and validate environment variables
 openai==1.14.2 #openai library to call openai
 httpx==0.27.0 # library for http calls. good at asynch
-aws-cdk-lib==2.133.0 # AWS CDK library
-constructs>=10.0.0,<11.0.0 # AWS constructs for CDK
+#commenting out AWS CDK for now..  AWS is 10x cost of Digital Ocean App Platform.
+#aws-cdk-lib==2.133.0 # AWS CDK library
+#constructs>=10.0.0,<11.0.0 # AWS constructs for CDK
 redis==5.0.3
 rq==1.16.1

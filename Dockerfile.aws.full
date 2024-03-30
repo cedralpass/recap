@@ -24,9 +24,9 @@ RUN pip install -r requirements.txt
 # Copy the content of the local src directory to the working directory
 COPY recap recap
 COPY aiapi aiapi
-copy ./app.py /app
+COPY ./app.py /app
 # initialize_run.sh
-copy ./initialize_run.sh /app
+COPY ./initialize_run.sh /app
 
 RUN mkdir -p /app/instance
 RUN chmod 66 /app/instance 
