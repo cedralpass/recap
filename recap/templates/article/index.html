@@ -12,17 +12,28 @@
     <article class="article">
       <header>
         <div>
-          <h1>{{ article['url_path'] }}</h1>
-          <div class="about">by {{ article['username'] }} on {{ article['created'].strftime('%Y-%m-%d') }}</div>
+          <h1><a class="" href="{{ url_for('article.show', id=article['id']) }}">{% if article['title'] is none %}
+            {{article['url_path']}}
+            {%else%}
+            {{article['title']}}
+            {%endif%}</a></h1>
+          </a></h1>
+          <div class="about">by {{ article['username'] }} on {{ article['created'].strftime('%Y-%m-%d') }}<br/>
+          <a class="" href="{{ article['url_path'] }}" target="_blank">Read Externally</a>
+          </div>
         </div>
         <a class="action" href="{{ url_for('article.show', id=article['id']) }}">View</a>
         {% if g.user['id'] == article['user_id'] %}
           <a class="action" href="{{ url_for('article.update', id=article['id']) }}">Edit</a>
         {% endif %}
       </header>
+      {% if article['title'] is none %}
+      <p class="body">Classifing document please wait ~20 seconds.</p>
+      {%else%}
       <p class="body">{{ article['title'] }}, {{ article['author'] }}</p>
       <p class="category">{{ article['category'] }}</p>
       <p class="body">{{ article['summary'] }}</p>
+      {%endif%}
     </article>
     {% if not loop.last %}
       <hr>

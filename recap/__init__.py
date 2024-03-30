@@ -88,6 +88,7 @@ def create_app():
     @app.route('/job/<string:id>/show')
     def job_show(id):
         job = current_app.task_queue.fetch_job(job_id=id)
+        
         return 'Job is Executing ' + job.id + ' its status ' + job.get_status(refresh=True)
     
     from . import db

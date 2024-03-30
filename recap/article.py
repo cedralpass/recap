@@ -155,12 +155,13 @@ def delete(id):
 def show(id):
     article = get_article(id,False)
     key_topics = article['key_topics']
-    if key_topics != '':
+    print(key_topics)
+    if key_topics is not None:
        key_topics_json = json.loads(key_topics)
     else:
       key_topics_json= {'key_topics':''}
     sub_categories = article['sub_category']
-    if sub_categories != '':
+    if sub_categories is not None:
         sub_categories_json = json.loads(sub_categories)
     else:
        sub_categories_json= {'sub_category':''}
@@ -170,6 +171,7 @@ def show(id):
 @bp.route('/<int:id>/reclassify', methods=('GET','POST'))
 @login_required
 def reclassify(id):
+    print("inside reclassify")
     article = get_article(id,False)
     current_app.logger.info("calling async Classification Service for article %s", article['url_path'])
     #recap.tasks.classify_url(url_path, g.user['id'])

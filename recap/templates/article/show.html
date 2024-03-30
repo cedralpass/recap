@@ -12,13 +12,20 @@
 <article class="article">
     <header>
         <div>
-            <h1>{{ article[0]['url_path'] }}</h1>
-            <div class="about">by {{ article[0]['username'] }} on {{ article[0]['created'].strftime('%Y-%m-%d') }}</div>
+            <h1>{% if article[0]['title'] is none %}{{ article[0]['url_path'] }}{%else%}
+                {{ article[0]['title'] }}
+                {%endif%}
+            </h1>
+            <div class="about">by {{ article[0]['username'] }} on {{ article[0]['created'].strftime('%Y-%m-%d') }}<br/>
+                <a class="" href="{{ article[0]['url_path'] }}" target="_blank">Read Externally</a></div>
         </div>
         {% if g.user['id'] == article[0]['user_id'] %}
         <a class="action" href="{{ url_for('article.update', id=article[0]['id']) }}">Edit</a>
         {% endif %}
     </header>
+    {% if article[0]['title'] is none %}
+    <p class="body">Classifing document please wait ~20 seconds.</p>
+      {%else%}
     <p class="body">{{ article[0]['title'] }}, {{ article[0]['author'] }}
     <div class="category">{{ article[0]['category'] }}</div>
     <p class="body">{{ article[0]['summary'] }}</p>
@@ -36,5 +43,6 @@
             {% endfor %}
         </ul>
     </div>
+    {%endif%}
 </article>
 {% endblock %}
