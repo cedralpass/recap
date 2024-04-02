@@ -7,62 +7,21 @@ from logging.handlers import RotatingFileHandler
 from logging.config import dictConfig
 from redis import Redis
 import rq
+from recap.config import RecapConfig
 
 def create_app():
     # create and configure the app
-    test_config = None
-    app = Flask(__name__)
-    
-   
-    
-    
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
-    )
-
     #TODO: figure out better config
     env = Env()
     env.read_env()
-    app.config['API_KEY'] = env("API_KEY")
-    app.config['REDIS_URL'] = env("REDIS_URL")
-    app.config['RECAP_RQ_QUEUE'] = env("RECAP_RQ_QUEUE")
 
-    log_level = env("RECAP_LogLevel")
-
-    #good example of logging from here: https://betterstack.com/community/guides/logging/how-to-start-logging-with-flask/
-    dictConfig(
-        {
-            "version": 1,
-            "formatters": {
-                "default": {
-                    "format": "[%(asctime)s] %(process)d %(levelname)s in %(module)s: %(message)s",
-                }
-            },
-            "handlers": {
-                "console": {
-                    "class": "logging.StreamHandler",
-                    "stream": "ext://sys.stdout",
-                    "formatter": "default",
-                },
-                "file": {
-                "class": "logging.handlers.RotatingFileHandler",
-                "filename": "recap_app.log",
-                "maxBytes": 1024*1024,
-                "backupCount": 2,
-                "formatter": "default",
-            }
-            },
-            "root": {"level": log_level, "handlers": ["console","file"]},
-        }
-    )
-
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
+    configure_logging()
+    # start the app
+    app = Flask(__name__)
+    
+    #configure the app
+    configure_app(app, env)
+    
 
     # ensure the instance folder exists
     try:
@@ -70,8 +29,8 @@ def create_app():
     except OSError:
         pass
 
-    app.redis = Redis.from_url(app.config['REDIS_URL'])
-    app.task_queue = rq.Queue(app.config['RECAP_RQ_QUEUE'], connection=app.redis)
+    app.redis = Redis.from_url(RecapConfig.RECAP_REDIS_URL)
+    app.task_queue = rq.Queue(RecapConfig.RECAP_RQ_QUEUE, connection=app.redis)
 
     # a simple page that says hello
     @app.route('/hello')
@@ -106,5 +65,40 @@ def create_app():
         rq_job = app.task_queue.enqueue(name, description=description, args=args, kwargs=kwargs)
         return rq_job
     
-    
     return app
+
+def configure_logging():
+    log_level = RecapConfig.RECAP_LogLevel
+    #good example of logging from here: https://betterstack.com/community/guides/logging/how-to-start-logging-with-flask/
+    dictConfig(
+        {
+            "version": 1,
+            "formatters": {
+                "default": {
+                    "format": "[%(asctime)s] %(process)d %(levelname)s in %(module)s: %(message)s",
+                }
+            },
+            "handlers": {
+                "console": {
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://sys.stdout",
+                    "formatter": "default",
+                },
+                "file": {
+                "class": "logging.handlers.RotatingFileHandler",
+                "filename": "recap_app.log",
+                "maxBytes": 1024*1024,
+                "backupCount": 2,
+                "formatter": "default",
+            }
+            },
+            "root": {"level": log_level, "handlers": ["console","file"]},
+        }
+    )
+
+def configure_app(app, env):
+    app.config['API_KEY'] = RecapConfig.RECAP_SECRET_KEY
+    app.config['REDIS_URL'] = RecapConfig.RECAP_REDIS_URL
+    app.config['RECAP_RQ_QUEUE'] = RecapConfig.RECAP_RQ_QUEUE
+    app.config["SECRET_KEY"]=RecapConfig.RECAP_SECRET_KEY # set the key to secure Flask App
+    app.config["DATABASE"]=os.path.join(app.instance_path, 'flaskr.sqlite')
